@@ -1,0 +1,51 @@
+<resources>
+    <!-- ========================================================================================================== -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="action_bar_button_size_button">40dp</dimen>
+    <dimen name="action_bar_button_padding">7dp</dimen>
+    <dimen name="action_bar_back_button_right_margin">5dp</dimen>
+    <dimen name="action_bar_title_text_size">22sp</dimen>
+    <dimen name="tracker_name_text_size">18sp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_extra_large">40sp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="padding_none">0dp</dimen>
+    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_normal">10dp</dimen>
+    <dimen name="padding_large">20dp</dimen>
+    <dimen name="padding_extra_large">40dp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="margin_none">0dp</dimen>
+    <dimen name="margin_small">5dp</dimen>
+    <dimen name="margin_normal">10dp</dimen>
+    <dimen name="margin_large">20dp</dimen>
+    <dimen name="margin_extra_large">40dp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="text_margin_normal">@dimen/margin_small</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="floating_action_button_size">50dp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="settings_item_icon_padding">5dp</dimen>
+    <dimen name="settings_item_margin">10dp</dimen>
+    <dimen name="settings_item_height">80dp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="dialog_width_standard">300dp</dimen>
+    <dimen name="dialog_title_height">40dp</dimen>
+    <dimen name="dialog_title_padding">5dp</dimen>
+    <dimen name="dialog_title_text_size">20sp</dimen>
+    <dimen name="dialog_footer_button_text_size">16sp</dimen>
+    <dimen name="dialog_footer_button_height">40dp</dimen>
+    <dimen name="dialog_primary_content_text_size">16sp</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="list_item_text_size_title">@dimen/text_size_large</dimen>
+    <dimen name="list_item_text_size_primary_content">@dimen/text_size_normal</dimen>
+    <dimen name="list_item_text_size_secondary_content">@dimen/text_size_small</dimen>
+    <!-- ========================================================================================================== -->
+    <dimen name="list_item_generic_height">40dp</dimen>
+    <!-- ========================================================================================================== -->
+</resources>

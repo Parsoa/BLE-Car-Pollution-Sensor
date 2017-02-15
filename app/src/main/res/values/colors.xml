@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ========================================================================================================== -->
+    <!-- ============================================== Commons =================================================== -->
+    <!-- ========================================================================================================== -->
+    <color name="color_primary_pink">#EC407A</color>
+    <color name="color_primary_dark_pink">#AD1457</color>
+    <color name="color_accent_pink">#00E5FF</color>
+
+    <color name="color_primary_teal">#009688</color>
+    <color name="color_primary_dark_teal">#004D40</color>
+    <color name="color_accent_teal">#FB8C00</color>
+
+    <color name="color_primary_default">@color/color_primary_teal</color>
+    <color name="color_primary_dark_default">@color/color_primary_dark_teal</color>
+    <color name="color_accent_default">@color/color_accent_teal</color>
+
+    <color name="color_solid_black">#000000</color>
+    <color name="color_solid_white">#FFFFFF</color>
+
+    <color name="text_color_dark">@color/color_solid_black</color>
+    <color name="text_color_light">#F2F2F2</color>
+    <color name="text_color_hint">#636363</color>
+
+    <color name="color_background_dark">#212121</color>
+    <color name="color_background_light">#ECEFF1</color>
+
+    <color name="action_bar_title_color">@color/color_solid_white</color>
+
+    <color name="button_background_normal">#F5F5F5</color>
+    <color name="button_background_pressed">#BDBDBD</color>
+
+    <color name="color_transparent">@android:color/transparent</color>
+    <color name="transparent_background">#68000000</color>
+    <!-- ========================================================================================================== -->
+    <!-- ========================================================================================================== -->
+    <!-- ========================================================================================================== -->
+</resources>

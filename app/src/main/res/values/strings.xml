@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Pollution Sensor</string>
+    <string name="commons_confirm">
+        تایید
+    </string>
+    <string name="commons_decline">
+        انصراف
+    </string>
+    <string name="commons_continue">
+        ادامه
+    </string>
+    <string name="common_on">
+        روشن
+    </string>
+    <string name="common_off">
+        خاموش
+    </string>
+    <string name="commons_start">
+        شروع
+    </string>
+    <string name="commons_finish">
+        پایان
+    </string>
+    <string name="commons_attention">
+        توجه
+    </string>
+    <string name="commons_retry">
+        تلاش مجدد
+    </string>
+    <string name="commons_description">
+        توضیحات
+    </string>
+    <string name="commons_close">
+        بستن
+    </string>
+    <string name="commons_key">
+شناسه
+    </string>
+    <string name="commons_value">
+مقدار
+    </string>
+</resources>

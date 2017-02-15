@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dialog_width_standard"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/base_dialog_text_view_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dialog_title_padding"
+        android:background="@color/color_primary_default"
+        android:textColor="@color/text_color_light"
+        android:textSize="@dimen/dialog_title_text_size"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="50dp"
+        android:orientation="vertical"
+        android:gravity="right">
+
+        <TextView
+            android:id="@+id/dialog_add_key_value_pair_text_view_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dialog_title_text_size"
+            android:textColor="@color/text_color_dark"
+            android:text="@string/commons_key"/>
+
+        <EditText
+            android:id="@+id/dialog_add_key_value_pair_edit_text_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dialog_primary_content_text_size"
+            android:textColor="@color/text_color_dark"/>
+
+        <TextView
+            android:id="@+id/dialog_add_key_value_pair_text_view_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dialog_title_text_size"
+            android:textColor="@color/text_color_dark"
+            android:text="@string/commons_value"/>
+
+        <EditText
+            android:id="@+id/dialog_add_key_value_pair_edit_text_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dialog_primary_content_text_size"
+            android:textColor="@color/text_color_dark"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/base_dialog_button_accept"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_color_dark"
+            android:textSize="@dimen/dialog_footer_button_text_size"
+            android:text="@string/commons_confirm"/>
+
+        <Button
+            android:id="@+id/base_dialog_button_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_color_dark"
+            android:textSize="@dimen/dialog_footer_button_text_size"
+            android:text="@string/commons_decline"/>
+
+    </LinearLayout>
+
+</LinearLayout>
