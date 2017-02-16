@@ -25,7 +25,7 @@
             android:layout="@layout/list_empty_layout_key_value_pairs_list" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/activity_main_floating_action_button"
+            android:id="@+id/activity_main_floating_action_button_add_key_value_pair"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -35,25 +35,35 @@
 
     </RelativeLayout>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <TextView
+            android:id="@+id/activity_main_text_view_scan_status"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout="@layout/list_empty_layout_device_list" />
+
         <ListView
             android:id="@+id/activity_main_list_view_devices"
+            android:layout_below="@id/activity_main_text_view_scan_status"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
         </ListView>
 
-        <ViewStub
-            android:id="@+id/activity_main_list_view_devices_list_empty_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout="@layout/list_empty_layout_device_list" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/activity_main_floating_action_button_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_add_circle_outline_white_48dp"/>
 
-    </FrameLayout>
+    </RelativeLayout>
 
 </LinearLayout>

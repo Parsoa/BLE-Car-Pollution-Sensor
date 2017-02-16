@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -21,10 +22,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.smartlab.pollutionsensor.ui.BaseActivity;
 import com.smartlab.pollutionsensor.ui.BaseDialog;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
+
+	private static final int REQUEST_ENABLE_BT = 1 ;
 
 	private static final int STATE_DISCONNECTED = 0;
 	private static final int STATE_CONNECTING = 1;
@@ -47,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
 	private Handler scanHandler ;
 
+	private TextView scanTextView ;
+
 	private DeviceListAdapter deviceListAdapter ;
 	private KeyValueListAdapter keyValueListAdapter ;
 
@@ -66,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
 		devicesListView = (ListView) findViewById(R.id.activity_main_list_view_devices) ;
 		deviceListAdapter = new DeviceListAdapter(this) ;
-		devicesListView.setEmptyView(findViewById(R.id.activity_main_list_view_devices_list_empty_layout)) ;
+		//devicesListView.setEmptyView(findViewById(R.id.activity_main_list_view_devices_list_empty_layout)) ;
 		devicesListView.setAdapter(deviceListAdapter) ;
 		devicesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -75,12 +82,22 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		findViewById(R.id.activity_main_floating_action_button).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.activity_main_floating_action_button_add_key_value_pair).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				new AddKeyValuePairDialog(MainActivity.this).show() ;
 			}
 		});
+
+		findViewById(R.id.activity_main_floating_action_button_scan).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleScan();
+			}
+		});
+
+		scanTextView = (TextView) findViewById(R.id.activity_main_text_view_scan_status) ;
+		scanTextView.setText("No devices found");
 
 		handleBluetoothAdapter() ;
 		scanHandler = new Handler() ;
@@ -90,10 +107,14 @@ public class MainActivity extends AppCompatActivity {
 	private void handleBluetoothAdapter() {
 		final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 		bluetoothAdapter = bluetoothManager.getAdapter();
+		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+			Log.e(Constants.DEBUG_TAG, "Enabling BT") ;
+			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		}
 	}
 
 	private final BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
-
 		@Override
 		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 			String intentAction ;
@@ -149,17 +170,19 @@ public class MainActivity extends AppCompatActivity {
 	private void handleScan() {
 		bluetoothAdapter.startLeScan(scanCallback);
 		Log.e(Constants.DEBUG_TAG, "starting scan ... ") ;
+		scanTextView.setText("Scanning ... ");
 		scanHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Log.e(Constants.DEBUG_TAG, "stopping scan scan ... ") ;
+				scanTextView.setText("scan stopped");
+				Log.e(Constants.DEBUG_TAG, "Scan stopped") ;
 				bluetoothAdapter.stopLeScan(scanCallback) ;
-				new Handler().postDelayed(new Runnable() {
+				/*new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						handleScan() ;
 					}
-				}, 3 * SCAN_PERIOD) ;
+				}, 3 * SCAN_PERIOD) ;*/
 			}
 		}, SCAN_PERIOD) ;
 	}
