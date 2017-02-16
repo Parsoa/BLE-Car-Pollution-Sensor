@@ -9,13 +9,14 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -47,10 +48,14 @@ public class MainActivity extends BaseActivity {
 
 	private static final long SCAN_PERIOD = 10000 ;
 
+	private boolean scanningBLE = false ;
+	private boolean scanningNormal = false ;
+
 	private ListView keyValuePairsListView ;
 	private ListView devicesListView ;
 
-	private Handler scanHandler ;
+	private Handler scanHandlerBLE ;
+	private Handler scanHandlerNormal ;
 
 	private TextView scanTextView ;
 
@@ -89,10 +94,17 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 
-		findViewById(R.id.activity_main_floating_action_button_scan).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.activity_main_floating_action_button_scan_ble).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handleScan();
+				handleBLEScan();
+			}
+		});
+
+		findViewById(R.id.activity_main_floating_action_button_scan_normal).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNormalScan();
 			}
 		});
 
@@ -100,19 +112,46 @@ public class MainActivity extends BaseActivity {
 		scanTextView.setText("No devices found");
 
 		handleBluetoothAdapter() ;
-		scanHandler = new Handler() ;
-		handleScan() ;
+	}
+
+	// ================================================================================================================ \\
+	// ================================================================================================================ \\
+	// ================================================================================================================ \\
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		//super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == REQUEST_ENABLE_BT) {
+			initializeScan() ;
+		}
 	}
 
 	private void handleBluetoothAdapter() {
-		final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-		bluetoothAdapter = bluetoothManager.getAdapter();
+		final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE) ;
+		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); //bluetoothManager.getAdapter() ;
 		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
 			Log.e(Constants.DEBUG_TAG, "Enabling BT") ;
-			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE) ;
+			startActivityForResult(intent, REQUEST_ENABLE_BT) ;
+		} else {
+			initializeScan() ;
 		}
 	}
+
+	private void initializeScan() {
+		scanHandlerBLE = new Handler() ;
+		scanHandlerNormal = new Handler() ;
+		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND) ;
+		registerReceiver(broadcastReceiver, filter) ;
+		Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		startActivity(discoverableIntent) ;
+		//handleBLEScan() ;
+	}
+
+	// ================================================================================================================ \\
+	// ================================================================================================================ \\
+	// ================================================================================================================ \\
 
 	private final BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
 		@Override
@@ -167,25 +206,60 @@ public class MainActivity extends BaseActivity {
 		}
 	};
 
-	private void handleScan() {
-		bluetoothAdapter.startLeScan(scanCallback);
-		Log.e(Constants.DEBUG_TAG, "starting scan ... ") ;
-		scanTextView.setText("Scanning ... ");
-		scanHandler.postDelayed(new Runnable() {
+	private void handleBLEScan() {
+		if (scanningNormal) {
+			bluetoothAdapter.cancelDiscovery() ;
+			scanningNormal = false ;
+		}
+		bluetoothAdapter.startLeScan(scanCallback) ;
+		scanningBLE = true ;
+		scanHandlerBLE.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				scanTextView.setText("scan stopped");
-				Log.e(Constants.DEBUG_TAG, "Scan stopped") ;
 				bluetoothAdapter.stopLeScan(scanCallback) ;
-				/*new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						handleScan() ;
-					}
-				}, 3 * SCAN_PERIOD) ;*/
+				scanningBLE = false ;
+				scanTextView.setText("Scan stopped") ;
+				Log.e(Constants.DEBUG_TAG, "Scan stopped") ;
 			}
 		}, SCAN_PERIOD) ;
+		Log.e(Constants.DEBUG_TAG, "starting BLE scan ... ") ;
+		scanTextView.setText("Scanning BLE ... ") ;
 	}
+
+	// ================================================================================================================ \\
+	// ================================================================================================================ \\
+	// ================================================================================================================ \\
+
+	private void handleNormalScan() {
+		if (scanningBLE) {
+			bluetoothAdapter.stopLeScan(scanCallback) ;
+			scanningBLE = false ;
+		}
+		bluetoothAdapter.startDiscovery() ;
+		scanningNormal = true ;
+		scanHandlerNormal.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				bluetoothAdapter.cancelDiscovery() ;
+				scanningNormal = false ;
+				scanTextView.setText("Scan stopped") ;
+				Log.e(Constants.DEBUG_TAG, "Scan stopped") ;
+			}
+		}, SCAN_PERIOD) ;
+		Log.e(Constants.DEBUG_TAG, "starting normal scan ... ") ;
+		scanTextView.setText("Scanning Normal ... ") ;
+	}
+
+	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction() ;
+			Log.e(Constants.DEBUG_TAG, "BroadcastReceiver") ;
+			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) ;
+				deviceListAdapter.addBluetoothDevice(device) ;
+			}
+		}
+	};
 
 	// ================================================================================================================ \\
 	// ================================================================================================================ \\
@@ -229,4 +303,10 @@ public class MainActivity extends BaseActivity {
 	// ================================================================================================================ \\
 	// ================================================================================================================ \\
 	// ================================================================================================================ \\
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(broadcastReceiver);
+	}
 }
