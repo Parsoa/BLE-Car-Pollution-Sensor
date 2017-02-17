@@ -1,29 +1,29 @@
 package com.smartlab.pollutionsensor;
 
-import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.Manifest ;
+import android.app.Activity ;
+import android.bluetooth.BluetoothAdapter ;
+import android.bluetooth.BluetoothDevice ;
+import android.bluetooth.BluetoothGatt ;
+import android.bluetooth.BluetoothGattCallback ;
+import android.bluetooth.BluetoothGattCharacteristic ;
+import android.bluetooth.BluetoothManager ;
+import android.bluetooth.BluetoothProfile ;
+import android.content.BroadcastReceiver ;
+import android.content.Context ;
+import android.content.Intent ;
+import android.content.IntentFilter ;
+import android.content.pm.PackageManager ;
+import android.os.Handler ;
+import android.support.v4.app.ActivityCompat ;
+import android.support.v4.content.ContextCompat ;
+import android.os.Bundle ;
+import android.util.Log ;
+import android.view.View ;
+import android.widget.AdapterView ;
+import android.widget.EditText ;
+import android.widget.ListView ;
+import android.widget.TextView ;
 
 import com.smartlab.pollutionsensor.ui.BaseActivity;
 import com.smartlab.pollutionsensor.ui.BaseDialog;
@@ -58,6 +58,7 @@ public class MainActivity extends BaseActivity {
 	private Handler scanHandlerNormal ;
 
 	private TextView scanTextView ;
+	private TextView connectionStateTextView ;
 
 	private DeviceListAdapter deviceListAdapter ;
 	private KeyValueListAdapter keyValueListAdapter ;
@@ -67,8 +68,9 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState) ;
 		setContentView(R.layout.activity_main) ;
 
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1) ;
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+				ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this,new String[]{ Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION }, 1) ;
 		}
 
 		keyValuePairsListView = (ListView) findViewById(R.id.activity_main_list_view_key_value_pairs) ;
@@ -78,7 +80,6 @@ public class MainActivity extends BaseActivity {
 
 		devicesListView = (ListView) findViewById(R.id.activity_main_list_view_devices) ;
 		deviceListAdapter = new DeviceListAdapter(this) ;
-		//devicesListView.setEmptyView(findViewById(R.id.activity_main_list_view_devices_list_empty_layout)) ;
 		devicesListView.setAdapter(deviceListAdapter) ;
 		devicesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -109,7 +110,10 @@ public class MainActivity extends BaseActivity {
 		});
 
 		scanTextView = (TextView) findViewById(R.id.activity_main_text_view_scan_status) ;
-		scanTextView.setText("No devices found");
+		scanTextView.setText("No devices found!");
+
+		connectionStateTextView = (TextView) findViewById(R.id.activity_main_text_view_connection_state) ;
+		connectionStateTextView.setText("No connection!");
 
 		handleBluetoothAdapter() ;
 	}
@@ -127,8 +131,7 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void handleBluetoothAdapter() {
-		final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE) ;
-		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); //bluetoothManager.getAdapter() ;
+		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter() ;
 		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
 			Log.e(Constants.DEBUG_TAG, "Enabling BT") ;
 			Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE) ;
@@ -143,10 +146,12 @@ public class MainActivity extends BaseActivity {
 		scanHandlerNormal = new Handler() ;
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND) ;
 		registerReceiver(broadcastReceiver, filter) ;
+	}
+
+	private void makeDeviceDiscoverable() {
 		Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 		startActivity(discoverableIntent) ;
-		//handleBLEScan() ;
 	}
 
 	// ================================================================================================================ \\
@@ -156,26 +161,20 @@ public class MainActivity extends BaseActivity {
 	private final BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
 		@Override
 		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-			String intentAction ;
 			if (newState == BluetoothProfile.STATE_CONNECTED) {
-				intentAction = ACTION_GATT_CONNECTED ;
 				connectionState = STATE_CONNECTED ;
-				//broadcastUpdate(intentAction) ;
-				Log.i(Constants.DEBUG_TAG, "Connected to GATT server.");
-				Log.i(Constants.DEBUG_TAG, "Attempting to start service discovery:" + bluetoothGatt.discoverServices());
+				connectionStateTextView.setText("Connected to " + bluetoothGatt.getDevice().getName());
+				bluetoothGatt.discoverServices() ;
 
 			} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-				intentAction = ACTION_GATT_DISCONNECTED;
-				connectionState = STATE_DISCONNECTED;
-				Log.i(Constants.DEBUG_TAG, "Disconnected from GATT server.");
-				//broadcastUpdate(intentAction);
+				connectionState = STATE_DISCONNECTED ;
+				connectionStateTextView.setText("No connection!");
 			}
 		}
 
 		@Override
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
-				//broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
 			} else {
 				Log.w(Constants.DEBUG_TAG, "onServicesDiscovered received: " + status);
 			}
@@ -184,8 +183,15 @@ public class MainActivity extends BaseActivity {
 		@Override
 		public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
-				//broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+				connectionStateTextView.setText("Connected to " + bluetoothGatt.getDevice().getName() + "\n Received data: " +
+					characteristic.getStringValue(0)) ;
+				//broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic) ;
 			}
+		}
+
+		@Override
+		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+			super.onCharacteristicChanged(gatt, characteristic);
 		}
 	};
 
@@ -253,10 +259,12 @@ public class MainActivity extends BaseActivity {
 	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction() ;
-			Log.e(Constants.DEBUG_TAG, "BroadcastReceiver") ;
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+				Log.e(Constants.DEBUG_TAG, "Device Found") ;
 				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) ;
 				deviceListAdapter.addBluetoothDevice(device) ;
+			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+				Log.e(Constants.DEBUG_TAG, "Discovery Finished") ;
 			}
 		}
 	};

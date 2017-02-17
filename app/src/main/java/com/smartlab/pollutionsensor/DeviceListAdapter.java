@@ -2,6 +2,7 @@ package com.smartlab.pollutionsensor;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -26,6 +27,11 @@ public class DeviceListAdapter extends BaseAdapter {
 	}
 
 	public void addBluetoothDevice(BluetoothDevice bluetoothDevice) {
+		for (BluetoothDevice b: this.bluetoothDevices) {
+			if (b.getName().equals(bluetoothDevice.getName())) {
+				return ;
+			}
+		}
 		this.bluetoothDevices.add(bluetoothDevice) ;
 		notifyDataSetChanged() ;
 	}
@@ -47,6 +53,7 @@ public class DeviceListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		Log.e(Constants.DEBUG_TAG, "Position: " + position) ;
 		BluetoothDevice bluetoothDevice = bluetoothDevices.get(position) ;
 		if (convertView == null) {
 			convertView = activity.getLayoutInflater().inflate(R.layout.list_item_device, null) ;

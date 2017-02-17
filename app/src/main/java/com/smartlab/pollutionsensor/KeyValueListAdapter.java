@@ -36,7 +36,7 @@ public class KeyValueListAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public KeyValuePair getItem(int position) {
 		return keyValuePairs.get(position) ;
 	}
 
