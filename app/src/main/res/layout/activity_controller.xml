@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/activity_controller_text_view_connection_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small"
+        android:layout_alignParentTop="true"
+        android:layout="@layout/list_empty_layout_device_list" />
+    
+    <ListView
+        android:id="@+id/activity_controller_list_view"
+        android:layout_width="match_parent" 
+              android:layout_height="match_parent"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_controller_floating_action_button_disconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_bluetooth_disabled_white_48dp"/>
+
+</RelativeLayout>

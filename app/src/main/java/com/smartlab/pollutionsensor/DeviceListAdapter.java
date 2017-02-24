@@ -27,9 +27,19 @@ public class DeviceListAdapter extends BaseAdapter {
 	}
 
 	public void addBluetoothDevice(BluetoothDevice bluetoothDevice) {
+		if (bluetoothDevice.getName() == null) {
+			return ;
+		}
+		if (!bluetoothDevice.getName().equals("Hamideh")) {
+			return ;
+		}
 		for (BluetoothDevice b: this.bluetoothDevices) {
-			if (b.getName().equals(bluetoothDevice.getName())) {
-				return ;
+			try {
+				if (b.getName().equals(bluetoothDevice.getName())) {
+					return;
+				}
+			} catch (Exception e) {
+				Log.e(Constants.DEBUG_TAG, "Error");
 			}
 		}
 		this.bluetoothDevices.add(bluetoothDevice) ;
@@ -53,7 +63,7 @@ public class DeviceListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.e(Constants.DEBUG_TAG, "Position: " + position) ;
+		//Log.e(Constants.DEBUG_TAG, "Position: " + position) ;
 		BluetoothDevice bluetoothDevice = bluetoothDevices.get(position) ;
 		if (convertView == null) {
 			convertView = activity.getLayoutInflater().inflate(R.layout.list_item_device, null) ;

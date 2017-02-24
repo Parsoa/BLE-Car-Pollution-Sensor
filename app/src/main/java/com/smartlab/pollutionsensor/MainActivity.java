@@ -4,11 +4,6 @@ import android.Manifest ;
 import android.app.Activity ;
 import android.bluetooth.BluetoothAdapter ;
 import android.bluetooth.BluetoothDevice ;
-import android.bluetooth.BluetoothGatt ;
-import android.bluetooth.BluetoothGattCallback ;
-import android.bluetooth.BluetoothGattCharacteristic ;
-import android.bluetooth.BluetoothManager ;
-import android.bluetooth.BluetoothProfile ;
 import android.content.BroadcastReceiver ;
 import android.content.Context ;
 import android.content.Intent ;
@@ -31,22 +26,9 @@ import com.smartlab.pollutionsensor.ui.BaseDialog;
 public class MainActivity extends BaseActivity {
 
 	private static final int REQUEST_ENABLE_BT = 1 ;
-
-	private static final int STATE_DISCONNECTED = 0;
-	private static final int STATE_CONNECTING = 1;
-	private static final int STATE_CONNECTED = 2;
-
-	public final static String ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
-	public final static String ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
-	public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED";
-	public final static String ACTION_DATA_AVAILABLE = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
-	public final static String EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA";
+	private static final long SCAN_PERIOD = 10000 ;
 
 	private BluetoothAdapter bluetoothAdapter ;
-	private BluetoothGatt bluetoothGatt ;
-	private int connectionState = STATE_DISCONNECTED;
-
-	private static final long SCAN_PERIOD = 10000 ;
 
 	private boolean scanningBLE = false ;
 	private boolean scanningNormal = false ;
@@ -58,7 +40,6 @@ public class MainActivity extends BaseActivity {
 	private Handler scanHandlerNormal ;
 
 	private TextView scanTextView ;
-	private TextView connectionStateTextView ;
 
 	private DeviceListAdapter deviceListAdapter ;
 	private KeyValueListAdapter keyValueListAdapter ;
@@ -84,7 +65,9 @@ public class MainActivity extends BaseActivity {
 		devicesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				bluetoothGatt = deviceListAdapter.getItem(position).connectGatt(MainActivity.this, false, bluetoothGattCallback);
+				ControllerActivity.bluetoothDevice = deviceListAdapter.getItem(position) ;
+				Intent intent = new Intent(MainActivity.this, ControllerActivity.class) ;
+				startActivity(intent) ;
 			}
 		});
 
@@ -111,9 +94,6 @@ public class MainActivity extends BaseActivity {
 
 		scanTextView = (TextView) findViewById(R.id.activity_main_text_view_scan_status) ;
 		scanTextView.setText("No devices found!");
-
-		connectionStateTextView = (TextView) findViewById(R.id.activity_main_text_view_connection_state) ;
-		connectionStateTextView.setText("No connection!");
 
 		handleBluetoothAdapter() ;
 	}
@@ -153,47 +133,6 @@ public class MainActivity extends BaseActivity {
 		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 		startActivity(discoverableIntent) ;
 	}
-
-	// ================================================================================================================ \\
-	// ================================================================================================================ \\
-	// ================================================================================================================ \\
-
-	private final BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
-		@Override
-		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-			if (newState == BluetoothProfile.STATE_CONNECTED) {
-				connectionState = STATE_CONNECTED ;
-				connectionStateTextView.setText("Connected to " + bluetoothGatt.getDevice().getName());
-				bluetoothGatt.discoverServices() ;
-
-			} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-				connectionState = STATE_DISCONNECTED ;
-				connectionStateTextView.setText("No connection!");
-			}
-		}
-
-		@Override
-		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-			if (status == BluetoothGatt.GATT_SUCCESS) {
-			} else {
-				Log.w(Constants.DEBUG_TAG, "onServicesDiscovered received: " + status);
-			}
-		}
-
-		@Override
-		public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-			if (status == BluetoothGatt.GATT_SUCCESS) {
-				connectionStateTextView.setText("Connected to " + bluetoothGatt.getDevice().getName() + "\n Received data: " +
-					characteristic.getStringValue(0)) ;
-				//broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic) ;
-			}
-		}
-
-		@Override
-		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-			super.onCharacteristicChanged(gatt, characteristic);
-		}
-	};
 
 	// ================================================================================================================ \\
 	// ================================================================================================================ \\

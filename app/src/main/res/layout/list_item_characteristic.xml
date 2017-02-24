@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_small">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/list_item_characteristic_text_view_uuid_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/list_item_text_size_secondary_content"
+            android:text="UUID:"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/text_color_dark"/>
+
+        <TextView
+            android:id="@+id/list_item_characteristic_text_view_uuid_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/list_item_characteristic_text_view_uuid_key"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/list_item_text_size_secondary_content"
+            android:textColor="@color/text_color_dark"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/list_item_characteristic_text_view_service_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/list_item_text_size_secondary_content"
+            android:text="Service:"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/text_color_dark"/>
+
+        <TextView
+            android:id="@+id/list_item_characteristic_text_view_service_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/list_item_characteristic_text_view_service_key"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/list_item_text_size_secondary_content"
+            android:textColor="@color/text_color_dark"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/list_item_characteristic_text_view_value_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/list_item_text_size_secondary_content"
+            android:text="Value:"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/text_color_dark"/>
+
+        <TextView
+            android:id="@+id/list_item_characteristic_text_view_value_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/list_item_characteristic_text_view_value_key"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/list_item_text_size_secondary_content"
+            android:textColor="@color/text_color_dark"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

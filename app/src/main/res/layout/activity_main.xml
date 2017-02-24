@@ -52,17 +52,9 @@
             android:padding="@dimen/padding_small"
             android:layout="@layout/list_empty_layout_device_list" />
 
-        <TextView
-            android:id="@+id/activity_main_text_view_connection_state"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/activity_main_text_view_scan_status"
-            android:padding="@dimen/padding_small"
-            android:layout="@layout/list_empty_layout_device_list" />
-
         <ListView
             android:id="@+id/activity_main_list_view_devices"
-            android:layout_below="@id/activity_main_text_view_connection_state"
+            android:layout_below="@id/activity_main_text_view_scan_status"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -73,7 +65,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_add_circle_outline_white_48dp"/>
+            android:src="@drawable/ic_bluetooth_searching_white_48dp"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/activity_main_floating_action_button_scan_normal"
@@ -82,6 +74,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_margin="16dp"
+            android:visibility="gone"
             android:src="@drawable/ic_bluetooth_searching_white_48dp"/>
 
     </RelativeLayout>
